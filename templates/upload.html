@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel= "stylesheet" type= "text/css" href= '/static/styles/style.css' />
+    <title>Banknotes</title>
+</head>
+
+<html>
+    <body>
+        <div class="header">
+            <h1>Counterfeit Banknote Detection</h1>
+        </div>
+
+
+        <section>
+
+            <p>
+                Upload file with the banknotes attributes (.csv file)
+                <br>Required attributes (in millimeters): margin low and length
+            </p>
+
+            <form action="/uploader" method="POST" enctype="multipart/form-data">
+                <input type="file" name="upload_file" />
+                <input type="submit"/>
+            </form>
+        </section>
+
+        <hr/>
+
+        <section>
+            {% if upload_done %}
+            <a href="{{url_for('return_file')}}"><button class="btn btn-default">Download Results</button></a>
+            {% endif %}
+
+            <p>
+                {{name_file_uploaded}}
+                <br>{{count_true}}
+                <br>{{count_false}}
+            </p>
+
+            {% block content %}
+            {{table | safe}}
+            {% endblock %}
+        </section>
+
+    </body>
+</html>
