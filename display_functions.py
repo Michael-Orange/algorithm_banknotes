@@ -4,6 +4,9 @@ import seaborn as sns
 
 import statsmodels.api as sm
 from statsmodels.formula.api import ols
+import scipy.stats as stats
+import pylab
+
 import math
 
 
@@ -189,3 +192,28 @@ def display_multiple_scatter(df, shape_given, significance):
         return fig
 
 
+
+def display_multiple_henrylines(data, variables, shape_given):
+    # display henri lines for each variables
+    # data = dataframe
+    # variables = column names of 'data' that needs to be displayed
+    for row, col in shape_given:
+        (i, j) = (0, 0)
+        fig, ax = plt.subplots(row, col, figsize=((3.5 * col), (5 * row)))
+
+        for k in range(len(variables)):
+            if (row > 1 and col > 1):
+                if j < row:
+                    stats.probplot(data[variables[k]], dist="norm", plot=ax[j][i])
+                    ax[j][i].set_title('{}'.format(variables[k]))
+                    i += 1
+                    if i == col:
+                        (i, j) = (0, j + 1)
+
+            else:
+                if i < max(row, col):
+                    stats.probplot(data[variables[k]], dist="norm", plot=ax[i])
+                    ax[i].set_title('{}'.format(variables[k]))
+                    i += 1
+        pylab.show()
+        return fig
