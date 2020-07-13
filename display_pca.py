@@ -136,6 +136,76 @@ def display_factorial_planes(X_projected, n_comp,
             plt.show(block=False)
             return fig
 
+
+#############
+
+def display_factorial_planes_2(X_projected, n_comp,
+                             pca, axis_ranks, labels=None, alpha=1, illustrative_var=None, illustrative_var_2=None, lims=None):
+
+
+    for d1, d2 in axis_ranks:
+        if d2 < n_comp:
+
+            sns.set_style("darkgrid")
+
+            fig = plt.figure(figsize=(12, 12))
+            x_axis = X_projected[:, d1]
+            y_axis = X_projected[:, d2]
+
+            # graph limits
+            if lims is None:
+                boundary = np.max(np.abs(X_projected[:, [d1, d2]])) * 1.1
+                xmin, ymin = -boundary, -boundary
+                xmax, ymax = boundary, boundary
+                plt.xlim([xmin, xmax])
+                plt.ylim([ymin, ymax])
+            else:
+                xmin, xmax, ymin, ymax = lims
+                plt.xlim(xmin, xmax)
+                plt.ylim(ymin, ymax)
+
+            # display points
+            if illustrative_var is None:
+                sns.scatterplot(x_axis, y_axis, alpha=alpha)
+            else:
+                sns.scatterplot(x_axis, y_axis, hue=illustrative_var_2, alpha=alpha, palette = 'Set3')
+
+            # display centroid only if there is no labels to display
+                if labels is None:
+                    centroids_all = []
+
+                    for cluster_name in sorted(illustrative_var.unique()):
+                        index_proj = illustrative_var.loc[illustrative_var == cluster_name].index
+                        x_centroid, y_centroid = (np.mean(x_axis[index_proj]), np.mean(y_axis[index_proj]))
+                        centroids_all.append([x_centroid, y_centroid])
+
+                    plt.scatter([row[0] for row in centroids_all], [row[1] for row in centroids_all], s=85, alpha=0.5, marker='o', c='black', label='Centroids')
+
+                    for i, (x, y) in enumerate(centroids_all):
+                        plt.text(x, y + 0.05, sorted(illustrative_var.unique())[i], fontsize='10', weight='bold',
+                                 ha='center', va='bottom')
+
+            # display labels of the points
+            if labels is not None:
+                for i, (x, y) in enumerate(X_projected[:, [d1, d2]]):
+                    if x >= xmin and x <= xmax and y >= ymin and y <= ymax:
+                        plt.text(x, y + 0.05, labels[i], fontsize='8', ha='center', va='bottom')
+
+            # display middle lines
+            plt.plot([-100, 100], [0, 0], color='grey', ls='--')
+            plt.plot([0, 0], [-100, 100], color='grey', ls='--')
+
+            # axes names with value
+            plt.xlabel('F{} ({}%)'.format(d1 + 1, round(100 * pca.explained_variance_ratio_[d1], 1)))
+            plt.ylabel('F{} ({}%)'.format(d2 + 1, round(100 * pca.explained_variance_ratio_[d2], 1)))
+
+            plt.legend()
+            plt.title("Projection on F{} and F{}".format(d1 + 1, d2 + 1))
+
+            plt.show(block=False)
+            return fig
+
+
 ###############
 
 def plot_dendrogram(Z, names, orientation='left', display=None):
