@@ -1,0 +1,6 @@
+,margin_low,length,genuine,prob_genuine(%)
+0,5.21,111.42,False,0.9
+1,6.0,112.09,False,0.34
+2,4.99,111.57,False,2.86
+3,4.44,113.2,True,94.38
+4,3.77,113.33,True,99.61

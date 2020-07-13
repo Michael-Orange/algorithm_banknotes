@@ -22,14 +22,11 @@ def uploader_file():
             try:
                 query = pd.read_csv(r'instance/app_upload/query.csv')
 
-                features = ['diagonal', 'height_left', 'height_right', 'margin_low', 'margin_up', 'length']
+                features = ['margin_low', 'length']
                 query = query[features]
                 query_col = query.columns
                 query_scaled = std_scale_model.transform(query.values)
                 query_scaled = pd.DataFrame(query_scaled, columns=query_col)
-
-                features = ['margin_low', 'length']
-                query_scaled = query_scaled[features]
 
                 prediction = pd.DataFrame(logreg_model.predict(query_scaled).transpose(), columns=['genuine'])
 
